@@ -12,10 +12,12 @@ import {
   ColumnDef,
   Table,
   TableOptionsResolved,
-  Updater,
   createTable,
   getCoreRowModel,
   getSortedRowModel,
+  ColumnSizingState,
+  Updater,
+  ColumnSizingInfoState,
 } from '@tanstack/table-core';
 import {
   ModusDataTableColumn,
@@ -45,6 +47,8 @@ export class ModusDataTable {
 
   /** (Optional) To enable row hover in table. */
   @Prop() hover = false;
+  /* (optional) To manage column resizing */
+  @Prop() columnResize = false;
 
   /** (Optional) To sort data in table. */
   @Prop() sort = false;
@@ -59,9 +63,15 @@ export class ModusDataTable {
   };
 
   /** Emits event on sort change */
-  @Event() sorting: EventEmitter<ModusDataTableSortingState>;
+  @Event() onSort: EventEmitter<ModusDataTableSortingState>;
 
-  @State() sortState: ModusDataTableSortingState = [];
+  /** Column resizing starts */
+  @State() columnSizing: ColumnSizingState = {};
+  @State() columnSizingInfo: ColumnSizingInfoState =
+    {} as ColumnSizingInfoState;
+  /** Column resizing ends */  
+
+  @State() sorting: ModusDataTableSortingState = [];
   @State() table: Table<unknown>;
 
   componentWillLoad(): void {
@@ -74,26 +84,36 @@ export class ModusDataTable {
       columns: (this.columns as ColumnDef<unknown>[]) ?? [],
       state: {
         columnPinning: {},
-        sorting: this.sortState,
+        sorting: this.sorting,
+        columnSizing: {},
+        columnSizingInfo: {} as ColumnSizingInfoState,
       },
       enableSorting: this.sort,
-      sortDescFirst: false,      // To-Do, this is work around to sort descending by default.
+      columnResizeMode: 'onChange',
+      enableColumnResizing: this.columnResize,
       onSortingChange: (updater: Updater<ModusDataTableSortingState>) =>
         this.setSorting(updater),
       getCoreRowModel: getCoreRowModel(),
       getSortedRowModel: getSortedRowModel(),
+      onColumnSizingChange: (updater: Updater<ColumnSizingState>) =>
+        this.updatingState(updater, 'columnSizing'),
+      onColumnSizingInfoChange: (updater: Updater<ColumnSizingInfoState>) =>
+        this.updatingState(updater, 'columnSizingInfo'),
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       onStateChange: () => {},
       renderFallbackValue: null,
     };
     this.table = createTable(options);
   }
+  
+  private updatingState(updater: Updater<unknown>, key: string) {
+    this[key] = updater instanceof Function ? updater(this[key]) : updater;
+    this.table.options.state[key] = this[key];
+  }
 
   setSorting(updater: Updater<ModusDataTableSortingState>): void {
-    this.sortState =
-      updater instanceof Function ? updater(this.sortState) : updater;
-    this.table.options.state.sorting = this.sortState;
-    this.sorting.emit(this.sortState);
+    this.updatingState(updater, 'sorting');
+    this.onSort.emit(this.sorting);
   }
 
   render(): void {
@@ -105,7 +125,8 @@ export class ModusDataTable {
 
     return (
       <Host>
-        <table class={className}>
+        <table class={className}
+         style={{ width: `${this.table.getCenterTotalSize()}px` }}>
           <thead>
             {this.table.getHeaderGroups()?.map((headerGroup, index) => (
               <tr key={headerGroup.id}>
@@ -118,10 +139,10 @@ export class ModusDataTable {
                       showSortIconOnHover={this.showSortIconOnHover}
                     />
                   );
-                })}
-              </tr>
-            ))}
-          </thead>
+              })}
+            </tr>
+          ))}
+        </thead>
           <tbody>
             {this.table.getRowModel()?.rows.map((row) => {
               return (

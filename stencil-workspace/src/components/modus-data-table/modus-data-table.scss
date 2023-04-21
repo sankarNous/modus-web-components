@@ -18,8 +18,20 @@ table {
         // border: $rem-1px $modus-table-border-color solid;
         // padding: 0.25rem 1rem;
         font-weight: $font-weight-semi-bold;
+        position: relative;
 
         // min-height: 3rem;
+
+        .resizer {
+          cursor: e-resize;
+          height: 100%;
+          position: absolute;
+          right: 0;
+          top: 0;
+          touch-action: none;
+          user-select: none;
+          width: 3px;   
+        }
 
         .can-sort {
           align-items: center;
@@ -102,9 +114,21 @@ table {
       padding: 0.25rem 1rem;
       text-align: left;
 
+      &.can-resize {
+        border-right: 2px solid $modus-table-column-resizing-border-color;
+      }
+
       &.text-align-center {
         text-align: center;
       }
+    }
+
+    // Truncating the cell text
+    td {
+      max-width: 1px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
   }
 
