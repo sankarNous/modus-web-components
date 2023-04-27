@@ -37,7 +37,7 @@ export const ModusDataTablePagination: FunctionalComponent<
         </div>
       </span>
       <span class="page-view-text">
-        View{' '}
+        Page View{' '}
         <select
           class="page-view"
           onChange={(e) => {

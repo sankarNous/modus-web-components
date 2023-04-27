@@ -59,7 +59,7 @@ export class ModusDataTable {
   @Prop() pagination: boolean;
 
   /* (optional) To set pagesize for the pagination. */
-  @Prop() pageSizeList: number[] = [];
+  @Prop() pageSizeList: number[] = [10,20,30,40];
 
   /** (Optional) To control display options of table. */
   @Prop() displayOptions?: ModusDataTableDisplayOptions = {
@@ -163,7 +163,7 @@ export class ModusDataTable {
           </tbody>
         </table>
         <br />
-        {(this.pagination && this.data.length !== 0) && (
+        {this.pagination && (
           <ModusDataTablePagination
             table={this.table}
             totalCount={this.data.length}

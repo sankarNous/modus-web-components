@@ -33,6 +33,13 @@ export default {
       },
       type: { required: false },
     },
+    pagination: {
+      description: 'Enable pagination on table data',
+      table: {
+        type: { summary: 'boolean' },
+      },
+      type: { required: false },
+    },
     showSortIconOnHover: {
       description: 'Sort icon on hover of table header',
       table: {
