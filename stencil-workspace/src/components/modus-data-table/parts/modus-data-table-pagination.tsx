@@ -38,7 +38,7 @@ export const ModusDataTablePagination: FunctionalComponent<
       </span>
       <span class="page-view-text">
         Page View{' '}
-        <select
+        {/* <select
           class="page-view"
           onChange={(e) => {
             const target = e.target as EventTarget & HTMLInputElement;
@@ -49,7 +49,14 @@ export const ModusDataTablePagination: FunctionalComponent<
               {size}
             </option>
           ))}
-        </select>
+        </select> */}
+        <modus-select
+        // id="select-demo-1"
+        // label="Select Demo 1"
+        options-display-prop="display"
+        options = {pageSizeList}
+        value={{display: 'Option 1'}}
+        ></modus-select>
       </span>
     </div>
   );
