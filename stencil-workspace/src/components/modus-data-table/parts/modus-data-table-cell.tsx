@@ -14,9 +14,11 @@ export const ModusDataTableCell: FunctionalComponent<
   ModusDataTableCellProps
 > = (props: ModusDataTableCellProps) => {
   return (
-    <td
-      key={props.cell.id}
-      class={`
+    // Step 2:
+    // <modus-tooltip text="hello there" position="bottom" >
+      <td
+        key={props.cell.id}
+        class={`
        ${
          props.cell.column.columnDef[PropertyDataType] ===
            ModusColumnDataType.Integer ||
@@ -28,10 +30,22 @@ export const ModusDataTableCell: FunctionalComponent<
           ${props.cell.column.getIsResizing() ? 'can-resize' : ''}
       `}
       style={{ width: `${props.cell.column.getSize()}px` }}>
-      {props.cell.column.columnDef[PropertyDataType] !==
-      ModusColumnDataType.Date
-        ? props.cell.renderValue()
-        : new Date(String(props.cell.renderValue()))?.toLocaleString()}
-    </td>
+        {/* Step 1:  */}
+        <modus-tooltip text="hello there" position="bottom" >
+        {props.cell.column.columnDef[PropertyDataType] !==
+        ModusColumnDataType.Date
+          ? props.cell.renderValue()
+          : new Date(String(props.cell.renderValue()))?.toLocaleString()}
+        </modus-tooltip>
+      </td>
+    // </modus-tooltip>
   );
 };
+
+// Issue description
+
+// Step 1: wrap modus-tooltip around the td cell (overflow: hidden to show an ellipsis when text is larger than the td cell width).
+// Issue: The tooltip is trapped in that TD cell because of overflow: hidden.
+
+// Step 2: Wrap the modus-tooltip around the TD cell.
+// Issue: It breaks the UI.
