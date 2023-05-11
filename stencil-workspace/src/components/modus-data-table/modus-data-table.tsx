@@ -22,7 +22,7 @@ import {
   createTable,
   getCoreRowModel,
   getPaginationRowModel,
-  getSortedRowModel
+  getSortedRowModel,
 } from '@tanstack/table-core';
 import {
   ModusDataTableColumn,
@@ -109,6 +109,11 @@ export class ModusDataTable {
    * Creates a table with some set of options.
    */
   initializeTable(): void {
+    console.log('initializeTable');
+    console.log(this.columns);
+    console.log(this.data);
+    console.log(this.hover);
+
     const options: TableOptionsResolved<unknown> = {
       data: this.data ?? [],
       columns: (this.columns as ColumnDef<unknown>[]) ?? [],
